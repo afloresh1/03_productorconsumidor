@@ -1,9 +1,10 @@
+// prodcons_01_buggy_02.c
+
 #include <pthread.h>
 #include <semaphore.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> /* Necesario para la función sleep() */
 
 #define MAXPRODUCING 10
 #define MAXAPPENDING 10
@@ -18,13 +19,15 @@
     printf(s, n); \
     fflush(stdout)
 
+/**
+Shared variables to all threads
+*/
 int n;
 sem_t s, delay;
 
 /**
 Auxiliary functions
 */
-
 void produce();
 void append();
 void consume();
@@ -33,7 +36,6 @@ void take();
 /**
 Functions run by threads
 */
-
 void *producer(void *data)
 {
     while (1)
@@ -50,12 +52,13 @@ void *producer(void *data)
     pthread_exit(0);
 }
 
+// the order of semaphores was changed
 void *consumer(void *data)
 {
-    sem_post(&delay); // <-- a typo error
+    sem_wait(&s); // this line was interchanged
     while (1)
     {
-        sem_wait(&s);
+        sem_wait(&delay); // with this one
         take();
         outi("[C] \t \t item: %d\n", n);
         n = n - 1;
@@ -70,7 +73,6 @@ void *consumer(void *data)
 /**
 main() function
 */
-
 int main(int argc, char **argv)
 {
     pthread_t *consumer_pt, *producer_pt;
