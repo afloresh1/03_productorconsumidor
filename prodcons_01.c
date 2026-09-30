@@ -49,7 +49,6 @@ void *producer(void *data)
     }
     pthread_exit(0);
 }
-}
 
 void *consumer(void *data)
 {
@@ -71,7 +70,6 @@ void *consumer(void *data)
 /**
 main() function
 */
-
 int main(int argc, char **argv)
 {
     pthread_t *consumer_pt, *producer_pt;
@@ -105,6 +103,7 @@ void take()
     _wait(MAXTAKING);
     out("[C] Taked\n");
 }
+
 void consume()
 {
     out("[C] \t Consuming\n");
