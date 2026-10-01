@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+
 #define MAXPRODUCING 10
 #define MAXAPPENDING 10
 #define MAXTAKING 5
@@ -18,6 +19,9 @@
     printf(s, n);  \
     fflush(stdout)
 
+/**
+Shared variables to all threads
+*/
 int n;
 sem_t s, delay;
 
@@ -52,16 +56,18 @@ void *producer(void *data)
 
 void *consumer(void *data)
 {
-    sem_post(&delay); // <-- a typo error
+    int m;
+    sem_wait(&delay);
     while (1)
     {
         sem_wait(&s);
         take();
         outi("[C] \t \t item: %d\n", n);
         n = n - 1;
+        m = n;
         sem_post(&s);
         consume();
-        if (n == 0)
+        if (m == 0)
             sem_wait(&delay);
     }
     pthread_exit(0);
