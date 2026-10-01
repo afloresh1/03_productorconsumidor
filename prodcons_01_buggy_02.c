@@ -5,11 +5,12 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-#define MAXPRODUCING 10
-#define MAXAPPENDING 10
-#define MAXTAKING 5
-#define MAXCONSUMING 5
+#define MAXPRODUCING 2
+#define MAXAPPENDING 2
+#define MAXTAKING 1
+#define MAXCONSUMING 1
 
 #define _wait(a) sleep(rand() % a)
 #define out(s) \
