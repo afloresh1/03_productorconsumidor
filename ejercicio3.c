@@ -23,10 +23,31 @@ sbuf_t shared;
 void *Producer(void *arg);
 void *Consumer(void *arg);
 
-int main() {
-    return 0;
-}
+int main()
+{
+    pthread_t idP[NP], idC[NC];
+    long index;
 
+    /* Inicializar semáforos */
+    sem_init(&shared.full, 0, 0);
+    sem_init(&shared.empty, 0, BUFF_SIZE);
+    sem_init(&shared.mutex, 0, 1);
+
+    shared.in = 0;
+    shared.out = 0;
+
+    /* Crear hilos productores */
+    for (index = 0; index < NP; index++) {  
+       pthread_create(&idP[index], NULL, Producer, (void*)index);
+    }
+
+    /* Crear hilos consumidores */
+    for (index = 0; index < NC; index++) {
+       pthread_create(&idC[index], NULL, Consumer, (void*)index);
+    }
+
+    pthread_exit(NULL);
+}
 
 
 void *Producer(void *arg)
@@ -81,3 +102,4 @@ void *Consumer(void *arg)
     }
     return NULL;
 }
+
