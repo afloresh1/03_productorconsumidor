@@ -56,3 +56,28 @@ void *Producer(void *arg)
     }
     return NULL;
 }
+void *Consumer(void *arg)
+{
+    int i, item, index;
+    index = (int)(long)arg;
+
+    for (i = 0; i < NITERS; i++) {
+        /* Esperar si no hay elementos llenos */
+        sem_wait(&shared.full);
+        /* Proteger la sección crítica */
+        sem_wait(&shared.mutex);
+
+        item = shared.buf[shared.out];
+        shared.out = (shared.out + 1) % BUFF_SIZE;
+        printf("-----> [C%d] consumido %d\n", index, item); 
+        fflush(stdout);
+
+        /* Liberar la sección crítica */
+        sem_post(&shared.mutex);
+        /* Incrementar el contador de ranuras vacías */
+        sem_post(&shared.empty);
+
+        if (i % 2 == 1) sleep(1);
+    }
+    return NULL;
+}
